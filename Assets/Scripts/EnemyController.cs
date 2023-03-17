@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class EnemyController : MonoBehaviour
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+    public class EnemyController : MonoBehaviour
 {
     public List<Transform> targetPos;
     public Transform curTargetPos;
@@ -16,32 +17,47 @@ public class EnemyController : MonoBehaviour
 
     public GameManager gameManager;
     public GameObject deadEffect;
+    public NavMeshAgent nav;
 
     void Start()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         characterController = GetComponent<CharacterController>();
-        for (int i = 1; i < 10; i++)
+
+        if (SceneManager.GetActiveScene().name == "TowerMain")
         {
-            targetPos.Add(GameObject.Find($"EnemyNode{i}").transform);
+            for (int i = 1; i < 10; i++)
+            {
+                targetPos.Add(GameObject.Find($"EnemyNode{i}").transform);
+            }
+        }
+        else if (SceneManager.GetActiveScene().name == "TowerMain_NavMesh")
+        {
+            nav = GetComponent<NavMeshAgent>();
+            curTargetPos = GameObject.Find("Destroyer").transform;
+            nav.SetDestination(curTargetPos.position);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        curTargetPos = targetPos[0];
-        float distance = Vector3.Distance(transform.position, curTargetPos.position);
-        Vector3 dir = curTargetPos.position - transform.position;
-        dir.y = 0;
-        dir.Normalize();
-        characterController.SimpleMove(dir * moveSpeed);
-
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), rotationSpeed * Time.deltaTime);
-        if (distance < 0.2f)
+        if (SceneManager.GetActiveScene().name == "TowerMain")
         {
-            targetPos.RemoveAt(0);
+            curTargetPos = targetPos[0];
+            float distance = Vector3.Distance(transform.position, curTargetPos.position);
+            Vector3 dir = curTargetPos.position - transform.position;
+            dir.y = 0;
+            dir.Normalize();
+            characterController.SimpleMove(dir * moveSpeed);
+
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), rotationSpeed * Time.deltaTime);
+            if (distance < 0.2f)
+            {
+                targetPos.RemoveAt(0);
+            }
         }
+
     }
 
     public void DamageByBullet(int dmg)

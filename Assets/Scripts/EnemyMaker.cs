@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyMaker : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class EnemyMaker : MonoBehaviour
                 enemy.name = $"Enemy_{enemyCount}";
                 enemy.GetComponent<EnemyController>().enemyHp = gameManager.curEnemyHp;
                 enemy.GetComponent<EnemyController>().moveSpeed = gameManager.curEnemySpeed;
+
                 enemyMaxCount = gameManager.stageEnemyCount;
                 enemyCount++;
             }

@@ -10,7 +10,9 @@ public class TowerController : MonoBehaviour
     public GameObject targetEnemy;
     public GameObject bulletPrefab;
     public GameObject muzzleEffect;
-
+    ParticleSystem[] effects;
+    public GameObject head;
+    public float rotSpeed = 5f;
     public enum TOWERSTATE
     {
         IDLE = 0,
@@ -24,6 +26,7 @@ public class TowerController : MonoBehaviour
     {
         towerState = TOWERSTATE.IDLE;
         enemyDetecting = GetComponentInChildren<EnemyDetecting>();
+        effects = muzzleEffect.GetComponentsInChildren<ParticleSystem>();
     }
 
     void Update()
@@ -41,16 +44,20 @@ public class TowerController : MonoBehaviour
                 if (targetEnemy != null)
                 {
 
-                    transform.LookAt(targetEnemy.transform);
+                    head.transform.LookAt(targetEnemy.transform);
                     // 타워 x축 회전하지 않도록
-                    Vector3 dir = transform.localRotation.eulerAngles;
-                    dir.x = 0;
-                    transform.localRotation = Quaternion.Euler(dir);
+                    Vector3 dir = head.transform.localRotation.eulerAngles;
+                    //dir.x = 0;
+                    head.transform.localRotation = Quaternion.Euler(dir);
                     attackCurTime += Time.deltaTime;
                     if(attackCurTime > attackSpeed)
                     {
                         //Debug.Log("공격!!!!!!!!!!!!!!!!!!!!!!");
                         attackCurTime = 0;
+                        foreach (var eff in effects)
+                        {
+                            //eff.SetCustomParticleData
+                        }
                         GameObject bullet = Instantiate(bulletPrefab);
                         bullet.transform.position = transform.position;
                         bullet.GetComponent<BulletController>().target = targetEnemy;

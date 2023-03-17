@@ -29,7 +29,7 @@ public class TowerBuildingManager : MonoBehaviour
                     case "Block":
                         GameObject tower = Instantiate(TowerPrefab);
                         tower.transform.position = hit.collider.transform.position
-                            + new Vector3(0, hit.collider.transform.localScale.y, 0);
+                            + new Vector3(-0.5f, hit.collider.transform.localScale.y +0.25f, 0.5f);
                         break;
                     case "Block_None":
                         Debug.Log("타워 배치 불가");
